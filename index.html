@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOTER GRATIFICATION | Vote With Your Nano</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap');
+
+        /* Strict Palette: 
+           Black: #000000 
+           Dark Grey: #0d0d0d
+           Neon Pink: #ff007f 
+           Pastel Pink: #ffb6c1
+           (Zero Purple)
+        */
+
+        body {
+            background-color: #000000;
+            color: #ffb6c1;
+            font-family: 'Space Mono', monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .flyer-container {
+            background-color: #0d0d0d;
+            max-width: 650px;
+            width: 100%;
+            border: 6px solid #ff007f;
+            padding: 25px;
+            box-shadow: 10px 10px 0px #000000, 12px 12px 0px #ff007f;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        h1, h2 {
+            font-family: 'Permanent Marker', cursive;
+            color: #ff007f;
+            text-align: center;
+            margin-top: 0;
+            line-height: 1.1;
+            text-shadow: 3px 3px 0px #000000, -1px -1px 0px #ffb6c1;
+        }
+
+        h1 {
+            font-size: clamp(2em, 8vw, 3em);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: clamp(0.9em, 4vw, 1.2em);
+            color: #ffb6c1;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        /* 3D Flip Container CSS - Now completely reactive */
+        .album-flip-container {
+            background-color: transparent;
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Forces a perfect square */
+            perspective: 1000px;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .album-flipper {
+            position: relative;
+            width: 100%;
+            height: 100%; /* Takes full height of the square */
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .album-flip-container.flipped .album-flipper {
+            transform: rotateY(180deg);
+        }
+
+        .album-front, .album-back {
+            position: absolute; /* Stack them exactly on top of each other */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* Force both sides to match the square */
+            backface-visibility: hidden;
+            border: 4px solid #000000;
+            outline: 3px solid #ff007f;
+            background-color: #000;
+            box-sizing: border-box;
+        }
+
+        .album-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image fills the square flawlessly */
+            display: block;
+            filter: contrast(1.1);
+        }
+
+        .album-back {
+            transform: rotateY(180deg);
+            background-color: #0d0d0d;
+            background-image: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5%; /* Fluid padding */
+            text-align: center;
+        }
+
+        .mission-title {
+            font-family: 'Permanent Marker', cursive;
+            color: #ff007f;
+            font-size: clamp(1.2rem, 6vw, 2.2rem); /* Fluid text scaling */
+            margin-bottom: 2%;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .mission-text {
+            color: #ffb6c1;
+            font-size: clamp(0.65rem, 3vw, 1.05rem); /* Fluid text scaling */
+            line-height: 1.4;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 4%;
+            border: 2px dashed #ff007f;
+        }
+
+        .click-hint {
+            font-size: clamp(0.5rem, 2.5vw, 0.8rem); /* Fluid text scaling */
+            color: #ff007f;
+            margin-top: 4%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background-color: #000;
+            padding: 5px 10px;
+        }
+
+        /* The Audio Trigger */
+        .click-send-btn {
+            display: block;
+            width: 100%;
+            background-color: #ff007f;
+            color: #000000;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: clamp(1.5em, 6vw, 2.2em);
+            text-align: center;
+            padding: 15px;
+            border: 5px solid #000000;
+            box-shadow: 6px 6px 0px #ffb6c1;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.1s ease-in-out;
+            margin-bottom: 40px;
+        }
+
+        .click-send-btn:hover {
+            background-color: #000000;
+            color: #ff007f;
+            border-color: #ff007f;
+            box-shadow: 6px 6px 0px #ff007f;
+            transform: translate(2px, 2px);
+        }
+
+        .section-header {
+            font-size: 1.8em;
+            border-bottom: 3px dashed #ff007f;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .poll-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .poll-station {
+            background-color: #000000;
+            border-left: 6px solid #ff007f;
+            padding: 15px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .poll-station::after {
+            content: '★';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #ff007f;
+            font-size: 1.5em;
+        }
+
+        .poll-title {
+            font-family: 'Permanent Marker', cursive;
+            color: #ff007f;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            padding-right: 25px; /* Keep title away from the star */
+        }
+
+        .poll-desc {
+            font-size: 0.95em;
+            line-height: 1.4;
+            color: #ffb6c1;
+            flex-grow: 1;
+        }
+
+        .highlight {
+            background-color: #ff007f;
+            color: #000;
+            padding: 0 5px;
+            font-weight: bold;
+        }
+
+        /* Action/Link Alignment */
+        .poll-action {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        a {
+            color: #ff007f;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: #ffb6c1;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+        }
+
+        .poll-link {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8em;
+            background-color: #0d0d0d;
+            border: 2px solid #ff007f;
+            padding: 5px 10px;
+            color: #ff007f;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .poll-link:hover {
+            background-color: #ff007f;
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Faucet List Styling */
+        .faucet-list {
+            margin-top: 15px;
+            padding-left: 0;
+            list-style-type: none;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .faucet-list li {
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #0d0d0d;
+            border-left: 3px solid #ffb6c1;
+        }
+
+        .faucet-list li::before {
+            content: '► ';
+            color: #ff007f;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.8em;
+            border-top: 2px solid #ff007f;
+            padding-top: 15px;
+            color: #ff007f;
+        }
+
+        /* Mobile Adjustments for margins and padding */
+        @media (max-width: 480px) {
+            .flyer-container {
+                padding: 15px;
+                border-width: 4px;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flyer-container">
+        
+        <h1>Voter Gratification</h1>
+        <div class="subtitle">Official Polling Locations Flyer</div>
+
+        <div class="album-flip-container" onclick="this.classList.toggle('flipped')">
+            <div class="album-flipper">
+                <div class="album-front">
+                    <img src="3632.png" alt="Voter Gratification Album Art - Hybrid Jhonen/Lisa Aesthetic">
+                </div>
+                <div class="album-back">
+                    <div class="mission-title">MISSION STATEMENT</div>
+                    <div class="mission-text">
+                        Every fraction of a cent is a ballot. Traditional platforms gatekeep your voice behind algorithms, middleman banks, and fee structures designed to extract value rather than transfer it.<br><br>
+                        Because Nano is feeless and instant, it dismantles the barrier between opinion and capital. We are replacing the algorithmic upvote with actual, unfiltered value transfer. <br><br>
+                        The revolution isn't televised; it's broadcasted on the block lattice. 
+                    </div>
+                    <div class="click-hint">[ CLICK TO RETURN ]</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="click-send-btn">[ CLICK SEND ]</button>
+
+        <h2 class="section-header">Active Polling Stations</h2>
+
+        <div class="poll-list">
+            
+            <div class="poll-station">
+                <div class="poll-title">WeNano</div>
+                <div class="poll-desc">
+                    <span class="highlight">The Local Ballot Box:</span> Drop your pin and fund your local district. Travel to real-world spots to claim payouts or drop a geo-fenced vote to incentivize your local community.
+                </div>
+                <div class="poll-action">
+                    <a href="https://wenano.net/" target="_blank" class="poll-link">[ VISIT ]</a>
+                </div>
+            </div>
+
+            <div class="poll-station">
+                <div class="poll-title">NanoGPT</div>
+                <div class="poll-desc">
+                    <span class="highlight">Direct Democracy of Compute:</span> Vote for your processing power. Bypass the gatekeepers and vote with fractions of a cent on the exact AI logic and compute tasks you want right now.
+                </div>
+                <div class="poll-action">
+                    <a href="https://nano-gpt.com/" target="_blank" class="poll-link">[ VISIT ]</a>
+                </div>
+            </div>
+
+            <div class="poll-station">
+                <div class="poll-title">Nano Stream Tip</div>
+                <div class="poll-desc">
+                    <span class="highlight">The Live Rally:</span> Real-time broadcast ballots. Bypass platform fees and vote instantly on a stream's entertainment value, triggering immediate neon feedback on-screen.
+                </div>
+                <div class="poll-action">
+                    <a href="https://github.com/jnki/nano-stream-tip" target="_blank" class="poll-link">[ GET TOOL ]</a>
+                </div>
+            </div>
+
+            <div class="poll-station">
+                <div class="poll-title">Social Tip Bots</div>
+                <div class="poll-desc">
+                    <span class="highlight">Curate The Timeline:</span> The ultimate replacement for the algorithmic upvote. Transfer actual micro-value directly to the best community voices.
+                </div>
+                <div class="poll-action">
+                    <a href="https://flipsuite.xyz/" target="_blank" class="poll-link">[ FLIPSUITE ]</a>
+                    <a href="https://www.reddit.com/r/nanocurrency/wiki/tipper/" target="_blank" class="poll-link" style="margin-left: 10px;">[ REDDIT TIPPER ]</a>
+                </div>
+            </div>
+
+            <div class="poll-station">
+                <div class="poll-title">Active Faucet Hubs</div>
+                <div class="poll-desc">
+                    <span class="highlight">Voter Registration:</span> Get your voting credentials. Hit a faucet to get your first frictionless fraction of XNO and enter the micro-economy instantly.
+                    <ul class="faucet-list">
+                        <li><a href="https://freenanofaucet.com/" target="_blank">FreeNanoFaucet.com</a></li>
+                        <li><a href="https://nanswap.com/nano-faucet" target="_blank">Nanswap.com/nano-faucet</a></li>
+                        <li><a href="https://getnano.ovh/faucet" target="_blank">GetNano.ovh/faucet</a></li>
+                        <li><a href="https://faucet.nanoriver.io/" target="_blank">Faucet.nanoriver.io</a></li>
+                        <li><a href="https://xnoxno.com/treasure/" target="_blank">Xnoxno.com/treasure</a></li>
+                        <li><a href="https://faucet.xnopay.com/" target="_blank">Faucet.xnopay.com</a></li>
+                        <li><a href="https://nanodrop.io/" target="_blank">Nanodrop.io</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            NETWORK STATUS: FEELESS // DEMOCRACY: INSTANT
+        </div>
+
+    </div>
+
+    <script>
+        // Create the audio object. 
+        // IMPORTANT: Change 'voter-gratification.mp3' to your exact MP3 file name.
+        const anthem = new Audio('voter-gratification.mp3');
+        let isPlaying = false;
+        const sendBtn = document.querySelector('.click-send-btn');
+
+        sendBtn.addEventListener('click', function() {
+            if (!isPlaying) {
+                anthem.play();
+                this.style.backgroundColor = '#000000';
+                this.style.color = '#ff007f';
+                this.style.borderColor = '#ff007f';
+                this.innerText = '[ BROADCASTING... CLICK TO PAUSE ]';
+                isPlaying = true;
+            } else {
+                anthem.pause();
+                this.style.backgroundColor = '#ff007f';
+                this.style.color = '#000000';
+                this.style.borderColor = '#000000';
+                this.innerText = '[ CLICK SEND ]';
+                isPlaying = false;
+            }
+        });
+
+        // Reset the button automatically when the track finishes
+        anthem.addEventListener('ended', function() {
+            this.currentTime = 0; 
+            sendBtn.style.backgroundColor = '#ff007f';
+            sendBtn.style.color = '#000000';
+            sendBtn.style.borderColor = '#000000';
+            sendBtn.innerText = '[ CLICK SEND ]';
+            isPlaying = false;
+        });
+    </script>
+</body>
+</html>
